@@ -14,7 +14,9 @@ def main():
     os.makedirs(OUT, exist_ok=True)
     dest = os.path.join(OUT, "entry.png")
     shutil.copyfile(SRC, dest)
-    print("wrote", dest)
+    if os.path.getsize(dest) != os.path.getsize(SRC):
+        raise SystemExit("copy mismatch: output differs from bundled entry.png")
+    print("wrote", dest, os.path.getsize(dest), "bytes")
 
 
 if __name__ == "__main__":
