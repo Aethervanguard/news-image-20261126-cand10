@@ -11,15 +11,21 @@ SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "entry.png")
 OUT = os.environ.get("MAKEFUN_OUTPUT_DIR", "output")
 
 
+def copy_entry(src, out_dir):
+    """Copy one bundled image into out_dir and verify the copy by size."""
+    os.makedirs(out_dir, exist_ok=True)
+    dest = os.path.join(out_dir, "entry.png")
+    shutil.copyfile(src, dest)
+    if os.path.getsize(dest) != os.path.getsize(src):
+        raise SystemExit("copy failed: output size differs from source")
+    print(f"wrote {dest} ({os.path.getsize(dest)} bytes)")
+    return dest
+
+
 def main():
     if not os.path.isfile(SRC):
         raise SystemExit("bundled entry.png is missing next to main.py")
-    os.makedirs(OUT, exist_ok=True)
-    dest = os.path.join(OUT, "entry.png")
-    shutil.copyfile(SRC, dest)
-    if os.path.getsize(dest) != os.path.getsize(SRC):
-        raise SystemExit("copy failed: output size differs from bundled entry.png")
-    print("wrote %s (%d bytes)" % (dest, os.path.getsize(dest)))
+    copy_entry(SRC, OUT)
 
 
 if __name__ == "__main__":
